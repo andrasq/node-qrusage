@@ -12,6 +12,8 @@ process or for its completed child processes.  Very low overhead, runs over
 
         npm install qrusage
 
+        npm test qrusage
+
 
 ### Summary
 

@@ -1,3 +1,8 @@
+/**
+ * Copyright (C) 2014 Andras Radics
+ * Licensed under the Apache License, Version 2.0
+ */
+
 #include <v8.h>
 #include <node.h>
 
@@ -14,6 +19,8 @@ using namespace v8;
 // (php is 409k/s)
 Handle<Value> GetrusageArray( const Arguments& args )
 {
+    // note: HandleScope adds 3% overhead to each of these calls
+    HandleScope scope;
     struct rusage ru;
     int who = (args[0]->IsNumber()) ? args[0]->Int32Value() : RUSAGE_SELF;
 
@@ -42,13 +49,15 @@ Handle<Value> GetrusageArray( const Arguments& args )
     info->Set(14, Number::New(ru.ru_nvcsw));
     info->Set(15, Number::New(ru.ru_nivcsw));
 
-    return info;
+    return scope.Close(info);
+    //return info;
 }
 
 // it is faster to return a CSV string and unpack it into an object in js
 // than to build and return a v8 object (220k/s vs 150k/s)
 Handle<Value> GetrusageCsv( const Arguments& args )
 {
+    HandleScope scope;
     struct rusage ru;
     int who = (args[0]->IsNumber()) ? args[0]->Int32Value() : RUSAGE_SELF;
     char buffer[10000];
@@ -75,17 +84,18 @@ Handle<Value> GetrusageCsv( const Arguments& args )
         ru.ru_nvcsw,
         ru.ru_nivcsw
     );
-    return String::New(buffer);
+
+    return scope.Close(String::New(buffer));
 }
 
-extern "C" void init(Handle<Object> target) {
-    HandleScope scope;
-    target->Set(String::New("getrusage_array"), FunctionTemplate::New(GetrusageArray)->GetFunction());
-    target->Set(String::New("getrusage_csv"), FunctionTemplate::New(GetrusageCsv)->GetFunction());
+extern "C" void init( Handle<Object> exports )
+{
+    exports->Set(String::New("getrusage_array"), FunctionTemplate::New(GetrusageArray)->GetFunction());
+    exports->Set(String::New("getrusage_csv"), FunctionTemplate::New(GetrusageCsv)->GetFunction());
 
-    target->Set(String::New("RUSAGE_SELF"), Number::New(RUSAGE_SELF));
-    target->Set(String::New("RUSAGE_CHILDREN"), Number::New(RUSAGE_CHILDREN));
-    target->Set(String::New("RUSAGE_THREAD"), Number::New(RUSAGE_THREAD));
+    exports->Set(String::New("RUSAGE_SELF"), Number::New(RUSAGE_SELF));
+    exports->Set(String::New("RUSAGE_CHILDREN"), Number::New(RUSAGE_CHILDREN));
+    exports->Set(String::New("RUSAGE_THREAD"), Number::New(RUSAGE_THREAD));
 }
 
 NODE_MODULE(qrusage, init)
