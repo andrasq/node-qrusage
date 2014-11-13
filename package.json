@@ -1,0 +1,32 @@
+{
+  "name": "qrusage",
+  "version": "1.0.0",
+  "description": "quick getrusage(2)",
+  "license": "Apache-2.0",
+  "main": "qrusage.js",
+  "author": {
+    "name": "Andras",
+    "url": "http://github.com/andrasq"
+  },
+  "engines": {
+    "node": ">=0.0.0"
+  },
+  "scripts": {
+    "test": "nodeunit"
+  },
+  "keywords": [
+    "Andras",
+    "quick",
+    "fast",
+    "getrusage",
+    "cpu",
+    "memory",
+    "resources",
+    "used"
+  ],
+  "dependencies": {
+  },
+  "devDependencies": {
+    "nodeunit": "*"
+  }
+}
