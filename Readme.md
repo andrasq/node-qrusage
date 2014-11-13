@@ -7,9 +7,11 @@ Returns the resource usage metrics tracked by the system for the current
 process or for its completed child processes.  Very low overhead, runs over
 400,000 calls / second.
 
+
 ### Installation
 
         npm install qrusage
+
 
 ### Summary
 
@@ -17,7 +19,26 @@ process or for its completed child processes.  Very low overhead, runs over
         var RUSAGE_CHILDREN = getrusage.RUSAGE_CHILDREN;
 
         var rusage_self = getrusage();
+        // =>
+        // { utime: 0.016,
+        //   stime: 0.008,
+        //   maxrss: 9892,
+        //   idrss: 0,
+        //   ixrss: 0,
+        //   isrss: 0,
+        //   minflt: 840,
+        //   majflt: 0,
+        //   nswap: 0,
+        //   inblock: 0,
+        //   oublock: 0,
+        //   msgsnd: 0,
+        //   msgrcv: 0,
+        //   nsignals: 0,
+        //   nvcsw: 32,
+        //   nivcsw: 4 }
+
         var rusage_children = getrusage(RUSAGE_CHILDREN);
+
 
 ### Notes
 
@@ -25,7 +46,7 @@ Unlike the unix system call, qrusage returns floating-point utime and stime
 instead of `struct timeval` timeval objects, and qrusage drops the `ru_`
 prefix from the field names.
 
-The list of getrusage fields (from `man 2 getrusage`):
+The list of getrusage fields (from linux man-pages 3.44 `man 2 getrusage`):
 
         struct timeval ru_utime; /* user CPU time used */
         struct timeval ru_stime; /* system CPU time used */
