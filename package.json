@@ -1,12 +1,16 @@
 {
   "name": "qrusage",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "quick getrusage(2)",
   "license": "Apache-2.0",
   "main": "qrusage.js",
   "author": {
     "name": "Andras",
     "url": "http://github.com/andrasq"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/andrasq/node-qrusage"
   },
   "engines": {
     "node": ">=0.0.0"
