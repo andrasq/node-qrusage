@@ -1,11 +1,12 @@
 qrusage
 =======
 
-quicker getrusage() binding to return process resource usage
+fast getrusage() binding to return process resource usage
 
-Returns the resource usage metrics tracked by the system for the current
-process or for its completed child processes.  Very low overhead, runs over
-400,000 calls / second.
+binding to the unix getrusage(2) system call.  Returns the resource usage
+metrics tracked by the operating system for the current process, or for its
+completed child processes.  Very low overhead, runs over 400,000 calls /
+second.
 
 
 ### Installation

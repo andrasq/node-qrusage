@@ -15,12 +15,14 @@
 var binding = require('./build/Release/qrusage');
 
 module.exports = function(which) { return getrusage_array(which); }
-module.exports.getrusage = binding.getrusage_array;
+module.exports.getrusage = getrusage_array;
 module.exports.getrusage_array = binding.getrusage_array;
 module.exports.getrusage_csv = binding.getrusage_csv;
 module.exports.RUSAGE_SELF = binding.RUSAGE_SELF;
 module.exports.RUSAGE_CHILDREN = binding.RUSAGE_CHILDREN;
 module.exports.RUSAGE_THREAD = binding.RUSAGE_THREAD;
+
+module.exports.binding = binding;
 
 
 function getrusage_array(which) {

@@ -15,6 +15,41 @@
 
 using namespace v8;
 
+
+Handle<Value>
+GetrusageZero( const Arguments& args )
+{
+    HandleScope scope;
+    return scope.Close(Number::New(0));
+}
+
+Handle<Value>
+GetrusageCpu( const Arguments& args )
+{
+    HandleScope scope;
+    struct rusage ru;
+    int who = (args[0]->IsNumber()) ? args[0]->Int32Value() : RUSAGE_SELF;
+
+    getrusage(who, &ru);
+    double cpu =
+        ru.ru_utime.tv_sec + ru.ru_utime.tv_usec * 1e-6 +
+        ru.ru_stime.tv_sec + ru.ru_stime.tv_usec * 1e-6;
+
+    return scope.Close(Number::New(cpu));
+}
+
+Handle<Value>
+Gettimeofday( const Arguments& args )
+{
+    HandleScope scope;
+    struct timeval tv;
+
+    gettimeofday(&tv, NULL);
+
+    double time = tv.tv_sec + tv.tv_usec * 1e-6;
+    return scope.Close(Number::New(time));
+}
+
 // it is much faster to return a v8 array and unpack it in js (440k/s vs 220k/s)
 // (php is 409k/s)
 Handle<Value> GetrusageArray( const Arguments& args )
@@ -24,7 +59,6 @@ Handle<Value> GetrusageArray( const Arguments& args )
     struct rusage ru;
     int who = (args[0]->IsNumber()) ? args[0]->Int32Value() : RUSAGE_SELF;
 
-    // FIXME: test args[0] and return RUSAGE_SELF (0) or RUSAGE_CHILDREN (-1) or RUSAGE_THREAD (1)
     getrusage(who, &ru);
 
     // faster to zero-detect than to create new Number every time
@@ -50,7 +84,6 @@ Handle<Value> GetrusageArray( const Arguments& args )
     info->Set(15, Number::New(ru.ru_nivcsw));
 
     return scope.Close(info);
-    //return info;
 }
 
 // it is faster to return a CSV string and unpack it into an object in js
@@ -90,6 +123,10 @@ Handle<Value> GetrusageCsv( const Arguments& args )
 
 extern "C" void init( Handle<Object> exports )
 {
+    exports->Set(String::New("getrusage_zero"), FunctionTemplate::New(GetrusageZero)->GetFunction());
+    exports->Set(String::New("getrusage_cpu"), FunctionTemplate::New(GetrusageCpu)->GetFunction());
+    exports->Set(String::New("gettimeofday"), FunctionTemplate::New(Gettimeofday)->GetFunction());
+
     exports->Set(String::New("getrusage_array"), FunctionTemplate::New(GetrusageArray)->GetFunction());
     exports->Set(String::New("getrusage_csv"), FunctionTemplate::New(GetrusageCsv)->GetFunction());
 
