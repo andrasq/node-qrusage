@@ -126,6 +126,7 @@ extern "C" void init( Handle<Object> exports )
     exports->Set(String::New("getrusage_zero"), FunctionTemplate::New(GetrusageZero)->GetFunction());
     exports->Set(String::New("getrusage_cpu"), FunctionTemplate::New(GetrusageCpu)->GetFunction());
     exports->Set(String::New("gettimeofday"), FunctionTemplate::New(Gettimeofday)->GetFunction());
+    exports->Set(String::New("fptime"), FunctionTemplate::New(Gettimeofday)->GetFunction());
 
     exports->Set(String::New("getrusage_array"), FunctionTemplate::New(GetrusageArray)->GetFunction());
     exports->Set(String::New("getrusage_csv"), FunctionTemplate::New(GetrusageCsv)->GetFunction());

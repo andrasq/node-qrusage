@@ -63,4 +63,16 @@ module.exports = {
         }
         t.done();
     },
+
+    'getrusage_cpu should return cpu usage': function(t) {
+        t.ok(getrusage.getrusage_cpu() > 0);
+        t.done();
+    },
+
+    'fptime should return the current time': function(t) {
+        var t1 = getrusage.fptime();
+        var t2 = Date.now();
+        t.ok(Math.abs(t1 - t2/1000) < .01);
+        t.done();
+    },
 };

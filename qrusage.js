@@ -22,6 +22,11 @@ module.exports.RUSAGE_SELF = binding.RUSAGE_SELF;
 module.exports.RUSAGE_CHILDREN = binding.RUSAGE_CHILDREN;
 module.exports.RUSAGE_THREAD = binding.RUSAGE_THREAD;
 
+// extras
+module.exports.getrusage_cpu = binding.getrusage_cpu;
+module.exports.gettimeofday = binding.gettimeofday;
+module.exports.fptime = binding.gettimeofday;
+
 module.exports.binding = binding;
 
 
