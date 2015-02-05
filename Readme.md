@@ -52,19 +52,28 @@ waited-for child processes of this process.
 
 ### Extras
 
-### getrusage.getrusage_cpu( )
+#### getrusage.cputime( )
 
 returns the number of seconds of user + system cpu time used.  Accepts
 the getrusage.RUSAGE_SELF or getrusage.RUSAGE_CHILDREN argument.
+
+For historical reasons, this call is also available as `getrusage_cpu`.
 
 #### getrusage.gettimeofday( ), getrusage.fptime( )
 
 returns a floating-point microsecond precision timestamp.  Same speed as
 but higher precision than Date.now(); much faster than process.hrtime().
 Unlike the Unix system call, this one returns a floating point value and
-not a `struct timeval`.  Also available as `fptime()`, as a
-floating-point version of the `time()` system call.
+not a `struct timeval`.
 
+Also available as `fptime()`, being a floating-point version of the
+`time()` system call.
+
+#### getrusage.microtime( )
+
+returns an integer microsecond precision timestamp.  This is the same
+timestamp value as `gettimeofday` above, but without any decimal
+rounding issues.
 
 ## Notes
 
@@ -100,3 +109,10 @@ Linux does not maintain many of these fields, and currently returns zeroes for:
         ru_msgsnd
         ru_msgrcv
         ru_nsignals
+
+## Change Log
+
+1.1.0
+- cputime() alias of getrusage_cpu()
+- microtime()
+- remove test code from C++ sources

@@ -64,8 +64,13 @@ module.exports = {
         t.done();
     },
 
-    'getrusage_cpu should return cpu usage': function(t) {
-        t.ok(getrusage.getrusage_cpu() > 0);
+    'cputime should return cpu usage': function(t) {
+        t.ok(getrusage.cputime() > 0);
+        t.done();
+    },
+
+    'getrusage_cpu should be an alias of cputime': function(t) {
+        t.equal(getrusage.getrusage_cpu, getrusage.cputime);
         t.done();
     },
 
@@ -73,6 +78,18 @@ module.exports = {
         var t1 = getrusage.fptime();
         var t2 = Date.now();
         t.ok(Math.abs(t1 - t2/1000) < .01);
+        t.done();
+    },
+
+    'gettimeofday should alias fptime': function(t) {
+        t.equal(getrusage.fptime, getrusage.gettimeofday);
+        t.done();
+    },
+
+    'microtime should return the current time': function(t) {
+        var t1 = getrusage.microtime();
+        var t2 = getrusage.fptime();
+        t.ok(Math.abs(t1*1e-6 - t2) < .0001);
         t.done();
     },
 };

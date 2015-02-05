@@ -17,14 +17,7 @@ using namespace v8;
 
 
 Handle<Value>
-GetrusageZero( const Arguments& args )
-{
-    HandleScope scope;
-    return scope.Close(Number::New(0));
-}
-
-Handle<Value>
-GetrusageCpu( const Arguments& args )
+Cputime( const Arguments& args )
 {
     HandleScope scope;
     struct rusage ru;
@@ -47,6 +40,18 @@ Gettimeofday( const Arguments& args )
     gettimeofday(&tv, NULL);
 
     double time = tv.tv_sec + tv.tv_usec * 1e-6;
+    return scope.Close(Number::New(time));
+}
+
+Handle<Value>
+Microtime( const Arguments& args )
+{
+    HandleScope scope;
+    struct timeval tv;
+
+    gettimeofday(&tv, NULL);
+
+    double time = tv.tv_sec * 1e6 + tv.tv_usec;
     return scope.Close(Number::New(time));
 }
 
@@ -86,50 +91,13 @@ Handle<Value> GetrusageArray( const Arguments& args )
     return scope.Close(info);
 }
 
-// it is faster to return a CSV string and unpack it into an object in js
-// than to build and return a v8 object (220k/s vs 150k/s)
-Handle<Value> GetrusageCsv( const Arguments& args )
-{
-    HandleScope scope;
-    struct rusage ru;
-    int who = (args[0]->IsNumber()) ? args[0]->Int32Value() : RUSAGE_SELF;
-    char buffer[10000];
-
-    getrusage(who, &ru);
-
-    sprintf(
-        buffer,
-        "%4.3lf,%4.3lf,%lu,%lu,%lu,%lu,%lu,%lu,%lu,%lu,%lu,%lu,%lu,%lu,%lu,%lu",
-        ru.ru_utime.tv_sec + ru.ru_utime.tv_usec * .000001,
-        ru.ru_stime.tv_sec + ru.ru_stime.tv_usec * .000001,
-        ru.ru_maxrss,
-        ru.ru_ixrss,
-        ru.ru_idrss,
-        ru.ru_isrss,
-        ru.ru_minflt,
-        ru.ru_majflt,
-        ru.ru_nswap,
-        ru.ru_inblock,
-        ru.ru_oublock,
-        ru.ru_msgsnd,
-        ru.ru_msgrcv,
-        ru.ru_nsignals,
-        ru.ru_nvcsw,
-        ru.ru_nivcsw
-    );
-
-    return scope.Close(String::New(buffer));
-}
-
 extern "C" void init( Handle<Object> exports )
 {
-    exports->Set(String::New("getrusage_zero"), FunctionTemplate::New(GetrusageZero)->GetFunction());
-    exports->Set(String::New("getrusage_cpu"), FunctionTemplate::New(GetrusageCpu)->GetFunction());
+    exports->Set(String::New("cputime"), FunctionTemplate::New(Cputime)->GetFunction());
     exports->Set(String::New("gettimeofday"), FunctionTemplate::New(Gettimeofday)->GetFunction());
-    exports->Set(String::New("fptime"), FunctionTemplate::New(Gettimeofday)->GetFunction());
+    exports->Set(String::New("microtime"), FunctionTemplate::New(Microtime)->GetFunction());
 
     exports->Set(String::New("getrusage_array"), FunctionTemplate::New(GetrusageArray)->GetFunction());
-    exports->Set(String::New("getrusage_csv"), FunctionTemplate::New(GetrusageCsv)->GetFunction());
 
     exports->Set(String::New("RUSAGE_SELF"), Number::New(RUSAGE_SELF));
     exports->Set(String::New("RUSAGE_CHILDREN"), Number::New(RUSAGE_CHILDREN));
