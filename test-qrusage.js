@@ -1,8 +1,13 @@
-getrusage = require('../qrusage.js');
+/**
+ * Copyright (C) 2014,2016 Andras Radics
+ * Licensed under the Apache License, Version 2.0
+ */
+
+getrusage = require('./qrusage.js');
 
 module.exports = {
     'should have valid package.json': function(t) {
-        var json = require('../package.json');
+        var json = require('./package.json');
         t.done();
     },
 
