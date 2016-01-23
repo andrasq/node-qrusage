@@ -113,7 +113,7 @@ Linux does not maintain many of these fields, and currently returns zeroes for:
 ## Change Log
 
 1.2.0
-- use `nan` 2.x for v8 bindings (15% slower though)
+- use `nan` 2.x for v8 bindings (5% slower though)
 
 1.1.0
 - cputime() alias of getrusage_cpu()
