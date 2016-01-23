@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2014 Andras Radics
+ * Copyright (C) 2014,2016 Andras Radics
  * Licensed under the Apache License, Version 2.0
  */
 
