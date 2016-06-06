@@ -97,4 +97,18 @@ module.exports = {
         t.ok(Math.abs(t1*1e-6 - t2) < .0001);
         t.done();
     },
+
+    'cpuUsage should return usage': function(t) {
+        var t1 = getrusage.cpuUsage();
+        t.ok(t1.user > 0);
+        t.ok(t1.system >= 0);
+        t.done();
+    },
+
+    'cpuUsage should diff times': function(t) {
+        var t1 = getrusage.cpuUsage({user: -10, system: -20});
+        t.ok(t1.user > 10);
+        t.ok(t1.system >= 20);
+        t.done();
+    },
 };

@@ -5,7 +5,7 @@
  * fields not maintained by Linux are returned as zeros.  These are
  * ixrss, idrss, isrss, nswap, msgsnd, msgrcv, nsignals
  *
- * Copyright (C) 2014 Andras Radics
+ * Copyright (C) 2014,2016 Andras Radics
  * Licensed under the Apache License, Version 2.0
  */
 
@@ -28,6 +28,18 @@ module.exports.fptime = binding.gettimeofday;
 module.exports.microtime = binding.microtime;
 
 module.exports.binding = binding;
+
+module.exports.cpuUsage = function cpuUsage( lastUsage ) {
+    var usage = binding.cpuusage();
+    if (!lastUsage) return {
+        user: usage[0],
+        system: usage[1]
+    }
+    else return {
+        user: usage[0] - lastUsage.user,
+        system: usage[1] - lastUsage.system
+    };
+}
 
 
 function getrusage_array(which) {

@@ -30,6 +30,33 @@ NAN_METHOD(cputime) {
     info.GetReturnValue().Set(Nan::New(cpuUsed));
 }
 
+NAN_METHOD( cpuusage ) {
+    struct rusage ru;
+    int who = (info[0]->IsNumber()) ? info[0]->Int32Value() : RUSAGE_SELF;
+
+    getrusage(who, &ru);
+
+    v8::Local<v8::Array> usage_array = Nan::New<v8::Array>(2);
+    Nan::Set(usage_array, 0, Nan::New((double)ru.ru_utime.tv_sec * 1e6 + (double)ru.ru_utime.tv_usec));
+    Nan::Set(usage_array, 1, Nan::New((double)ru.ru_stime.tv_sec * 1e6 + (double)ru.ru_stime.tv_usec));
+
+    info.GetReturnValue().Set(usage_array);
+    return;
+
+    // faster to populate an array of 2 with 2 doubles than to build one string
+    char timebuf[1000];
+    sprintf(timebuf, "%llu %llu",
+        ((unsigned long long)ru.ru_utime.tv_sec * 1000000 + ru.ru_utime.tv_usec),
+        ((unsigned long long)ru.ru_stime.tv_sec * 1000000 + ru.ru_stime.tv_usec));
+    info.GetReturnValue().Set(Nan::New(timebuf).ToLocalChecked());
+
+    // 2x faster to populate an array than an object
+    v8::Local<v8::Object> usage_object = Nan::New<v8::Object>();
+    Nan::Set(usage_object, Nan::New("user").ToLocalChecked(),        Nan::New((double)ru.ru_utime.tv_sec * 1e6 + (double)ru.ru_utime.tv_usec));
+    Nan::Set(usage_object, Nan::New("system").ToLocalChecked(),      Nan::New((double)ru.ru_stime.tv_sec * 1e6 + (double)ru.ru_stime.tv_usec));
+    info.GetReturnValue().Set(usage_object);
+}
+
 NAN_METHOD( gettimeofday ) {
     struct timeval tv;
 
@@ -87,6 +114,7 @@ NAN_MODULE_INIT(InitAll) {
 
     Nan::Set(target, Nan::New("zero").ToLocalChecked(),                 Nan::GetFunction(Nan::New<FunctionTemplate>(zero)).ToLocalChecked()),
     Nan::Set(target, Nan::New("cputime").ToLocalChecked(),              Nan::GetFunction(Nan::New<FunctionTemplate>(cputime)).ToLocalChecked()),
+    Nan::Set(target, Nan::New("cpuusage").ToLocalChecked(),             Nan::GetFunction(Nan::New<FunctionTemplate>(cpuusage)).ToLocalChecked()),
     Nan::Set(target, Nan::New("gettimeofday").ToLocalChecked(),         Nan::GetFunction(Nan::New<FunctionTemplate>(gettimeofday)).ToLocalChecked()),
     Nan::Set(target, Nan::New("microtime").ToLocalChecked(),            Nan::GetFunction(Nan::New<FunctionTemplate>(microtime)).ToLocalChecked()),
     Nan::Set(target, Nan::New("getrusage_array").ToLocalChecked(),      Nan::GetFunction(Nan::New<FunctionTemplate>(getrusage_array)).ToLocalChecked()),
