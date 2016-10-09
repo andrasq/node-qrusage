@@ -121,6 +121,9 @@ Linux does not maintain many of these fields, and currently returns zeroes for:
 
 ## Change Log
 
+1.4.0
+- 3x speedup to `getrusage` and `cpuUsage` with node v4 and higher
+
 1.3.0
 - cpuUsage() call
 

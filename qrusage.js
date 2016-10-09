@@ -14,6 +14,12 @@
 
 var binding = require('./build/Release/qrusage');
 
+// static Float64Array to receive return values
+var _float16;
+if (process.version > 'v4') {
+    _float16 = new Float64Array(16);
+}
+
 module.exports = function(which) { return getrusage_array(which); }
 module.exports.getrusage = getrusage_array;
 module.exports.RUSAGE_SELF = binding.RUSAGE_SELF;
@@ -24,13 +30,19 @@ module.exports.cputime = binding.cputime;               // new 1.1.0 name
 module.exports.getrusage_cpu = binding.cputime;         // pre-1.1.0 name
 
 module.exports.gettimeofday = binding.gettimeofday;
+
 module.exports.fptime = binding.gettimeofday;
-module.exports.microtime = binding.microtime;
+module.exports.microtime = function() {
+    var t = binding.microtime(_float16)
+    return _float16 ? _float16[0] : t;
+};
 
 module.exports.binding = binding;
 
 module.exports.cpuUsage = function cpuUsage( lastUsage ) {
-    var usage = binding.cpuusage();
+    var usage = binding.cpuusage(_float16);
+    if (_float16) usage = _float16;
+
     if (!lastUsage) return {
         user: usage[0],
         system: usage[1]
@@ -43,7 +55,8 @@ module.exports.cpuUsage = function cpuUsage( lastUsage ) {
 
 
 function getrusage_array(which) {
-    var fields = binding.getrusage_array(which);
+    var fields = binding.getrusage_array(which, _float16);
+    if (_float16) fields = _float16;
     return {
         utime: fields[0],
         stime: fields[1],
