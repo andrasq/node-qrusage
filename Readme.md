@@ -140,4 +140,4 @@ Linux does not maintain many of these fields, and currently returns zeroes for:
 1.1.0
 - cputime() alias of getrusage_cpu()
 - microtime()
-- remove test code from C++ sources
+
