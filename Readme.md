@@ -5,8 +5,8 @@ fast getrusage() binding to return process resource usage
 
 binding to the unix getrusage(2) system call.  Returns the resource usage
 metrics tracked by the operating system for the current process, or for its
-completed child processes.  Very low overhead, runs over 400,000 calls /
-second.
+completed child processes.  Low overhead, runs over 650,000 calls /
+second (node v6.2.2).
 
 
 ## Installation
@@ -44,7 +44,7 @@ second.
 
 ## Functions
 
-### getrusage( )
+### getrusage( [who] )
 
 return usage for the current process.  If called as
 `getrusage(getrusage.RUSAGE_CHILDREN)` will return usage for all the
@@ -52,7 +52,7 @@ waited-for child processes of this process.
 
 ### Extras
 
-#### getrusage.cputime( )
+#### getrusage.cputime( [who] )
 
 returns the number of seconds of user + system cpu time used.  Accepts
 the getrusage.RUSAGE_SELF or getrusage.RUSAGE_CHILDREN argument.
@@ -118,6 +118,13 @@ Linux does not maintain many of these fields, and currently returns zeroes for:
         ru_msgsnd
         ru_msgrcv
         ru_nsignals
+
+
+## Related Work
+
+- [`qrusage`](http://npmjs.org/package/qrusage) - qrusage.getrusage, 650k/s
+- [`getrusage`](http://npmjs.org/package/getrusage) - getrusage.usage, 100k/s
+
 
 ## Change Log
 
