@@ -75,6 +75,15 @@ returns an integer microsecond precision timestamp.  This is the same
 timestamp value as `gettimeofday` above, but without any decimal
 rounding issues.
 
+#### getrusage.cpuUsage( [lastUsage] )
+
+return an object with properties `user` and `system` contain the number of
+microseconds of cpu time that this process has used since starting, or,
+if the optional `lastUsage` object is passed in, since that last usage
+was read.
+
+This call is the same as `process.cpuUsage()` that appeared in node-v6.1.0.
+
 ## Notes
 
 Unlike the unix system call, qrusage returns floating-point utime and stime
@@ -112,8 +121,14 @@ Linux does not maintain many of these fields, and currently returns zeroes for:
 
 ## Change Log
 
+1.4.0
+- 3x speedup to `getrusage` and `cpuUsage` with node v4 and higher
+
+1.3.0
+- cpuUsage() call
+
 1.2.0
-- use `nan` 2.x for v8 bindings (15% slower though)
+- use `nan` 2.x for v8 bindings (5% slower though)
 
 1.1.0
 - cputime() alias of getrusage_cpu()
