@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2014,2016 Andras Radics
+ * Copyright (C) 2014,2016-2017 Andras Radics
  * Licensed under the Apache License, Version 2.0
  */
 
@@ -8,6 +8,7 @@ using v8::FunctionTemplate;
 
 #include <sys/time.h>
 #include <sys/resource.h>
+//#include <unistd.h>
 
 #ifndef RUSAGE_THREAD
 #  define RUSAGE_THREAD         RUSAGE_SELF
@@ -30,7 +31,14 @@ double * getFloat64ArrayPointer( unsigned int length, v8::Local<v8::Value> arg )
 }
 
 NAN_METHOD(zero) {
-    info.GetReturnValue().Set(Nan::New(0));
+    double* fields = getFloat64ArrayPointer(1, info[0]);
+    if (fields) {
+        fields[0] = 0;
+        return;
+    }
+    else {
+        info.GetReturnValue().Set(Nan::New(0));
+    }
 }
 
 NAN_METHOD(cputime) {
@@ -54,10 +62,12 @@ NAN_METHOD( cpuusage ) {
     getrusage(who, &ru);
 
     if (fields) {
+        // fastest is to poke the results into an existing array
         fields[0] = (double)ru.ru_utime.tv_sec * 1e6 + (double)ru.ru_utime.tv_usec;
         fields[1] = (double)ru.ru_stime.tv_sec * 1e6 + (double)ru.ru_stime.tv_usec;;
     }
     else {
+        // faster to populate an array of 2 with 2 doubles than to build one string
         v8::Local<v8::Array> usage_array = Nan::New<v8::Array>(2);
         Nan::Set(usage_array, 0, Nan::New((double)ru.ru_utime.tv_sec * 1e6 + (double)ru.ru_utime.tv_usec));
         Nan::Set(usage_array, 1, Nan::New((double)ru.ru_stime.tv_sec * 1e6 + (double)ru.ru_stime.tv_usec));
@@ -65,14 +75,14 @@ NAN_METHOD( cpuusage ) {
     }
     return;
 
-    // faster to populate an array of 2 with 2 doubles than to build one string
+    // faster to build a string than an object
     char timebuf[1000];
     sprintf(timebuf, "%llu %llu",
         ((unsigned long long)ru.ru_utime.tv_sec * 1000000 + ru.ru_utime.tv_usec),
         ((unsigned long long)ru.ru_stime.tv_sec * 1000000 + ru.ru_stime.tv_usec));
     info.GetReturnValue().Set(Nan::New(timebuf).ToLocalChecked());
+    return;
 
-    // 2x faster to populate an array than an object
     v8::Local<v8::Object> usage_object = Nan::New<v8::Object>();
     Nan::Set(usage_object, Nan::New("user").ToLocalChecked(),        Nan::New((double)ru.ru_utime.tv_sec * 1e6 + (double)ru.ru_utime.tv_usec));
     Nan::Set(usage_object, Nan::New("system").ToLocalChecked(),      Nan::New((double)ru.ru_stime.tv_sec * 1e6 + (double)ru.ru_stime.tv_usec));
