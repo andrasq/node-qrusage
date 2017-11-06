@@ -16,6 +16,7 @@
     "node": ">=0.0.0"
   },
   "scripts": {
+    "clean": "rm -rf .nyc_output/ coverage/ build/ npm-debug.log",
     "test": "qnit test-*"
   },
   "keywords": [
