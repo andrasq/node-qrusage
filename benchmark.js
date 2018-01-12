@@ -1,3 +1,5 @@
+// npm install getursage microtime
+
 var qtimeit = require('qtimeit');
 var qrusage = require('./');
 
@@ -7,6 +9,7 @@ var qrusage = require('./');
 var floats = new Float64Array(16);
 var x;
 qtimeit.bench.timeGoal = .5;
+qtimeit.bench.visualize = true;
 qtimeit.bench({
     'q.zero return': function() {
         x = qrusage.binding.zero();
@@ -21,11 +24,12 @@ qtimeit.bench({
     'process.cpuUsage': function() {
         x = process.cpuUsage();
         // 2.3m/s
+        // 3.7m/s SKL 4.5g node-v8
     },
     'Date.now': function() {
         x = Date.now();
         // 4.9m/s (was 6m/s with node-v0.10.42)
-        // 7.3m/s (SKL 4.5g)
+        // 7.3m/s (SKL 4.5g), 8.2m/s node-v8
     },
     'cputime': function() {
         x = qrusage.cputime();
@@ -35,7 +39,7 @@ qtimeit.bench({
         x = qrusage.cpuUsage();
         // 920k/s returning an array
         // 2.5m/s poking values into Float64 array
-        // 2.7m/s (SKL 4.5g)
+        // 2.7m/s (SKL 4.5g), 3.7m/s node-v8
     },
 **/
     'q.getrusage': function() {
@@ -48,7 +52,7 @@ qtimeit.bench({
         x = qrusage.microtime();
         // 4.8m/s
         // 5.2m/s poking value into Float64 array (Phenom II 3.6g)
-        // 7.4m/s (SKL 4.5g)
+        // 7.4m/s (SKL 4.5g), 7.8m/s node-v8
     },
 /**
     'microtime': function() {

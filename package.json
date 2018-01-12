@@ -15,10 +15,7 @@
   "engines": {
     "node": ">=0.0.0"
   },
-  "scripts": {
-    "clean": "rm -rf .nyc_output/ coverage/ build/ npm-debug.log",
-    "test": "qnit test-*"
-  },
+
   "keywords": [
     "Andras",
     "quick",
@@ -34,5 +31,11 @@
   },
   "devDependencies": {
     "qnit": "*"
+  },
+  "scripts": {
+    "clean": "rm -rf .nyc_output/ coverage/ build/ npm-debug.log",
+    "test": "qnit test-*",
+    "coverage": "nyc --reporter text --reporter lcov npm test",
+    "clean": "rm -rf .nyc_output coverage"
   }
 }
