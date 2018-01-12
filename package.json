@@ -1,6 +1,6 @@
 {
   "name": "qrusage",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "quick getrusage(2)",
   "license": "Apache-2.0",
   "main": "qrusage.js",
@@ -35,7 +35,6 @@
   "scripts": {
     "clean": "rm -rf .nyc_output/ coverage/ build/ npm-debug.log",
     "test": "qnit test-*",
-    "coverage": "nyc --reporter text --reporter lcov npm test",
-    "clean": "rm -rf .nyc_output coverage"
+    "coverage": "nyc --reporter text --reporter lcov npm test"
   }
 }

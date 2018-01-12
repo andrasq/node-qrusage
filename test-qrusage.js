@@ -3,7 +3,7 @@
  * Licensed under the Apache License, Version 2.0
  */
 
-getrusage = require('./qrusage.js');
+getrusage = require('./');
 
 module.exports = {
     'should have valid package.json': function(t) {
@@ -111,4 +111,33 @@ module.exports = {
         t.ok(t1.system >= 20);
         t.done();
     },
+
+    'node without Float64Array': {
+        setUp: function(done) {
+            delete process.version;
+            process.version = '0.10.29';
+            delete require.cache[require.resolve('./')];
+            getrusage = require('./');
+            done();
+        },
+
+        'microtime returns a number': function(t) {
+            t.ok(getrusage.microtime() > 0);
+            t.ok(getrusage.fptime() > 0);
+            t.done();
+        },
+
+        'cpuUsage returns numbers': function(t) {
+            t.ok(getrusage.cpuUsage().user > 0);
+            t.ok(getrusage.cpuUsage().system >= 0);
+            t.done();
+        },
+
+        'getrusage returns numbers': function(t) {
+            var usage = getrusage.getrusage();
+            t.ok(usage.utime > 0);
+            t.ok(usage.maxrss > 0);
+            t.done();
+        },
+    }
 };

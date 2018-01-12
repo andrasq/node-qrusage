@@ -3,14 +3,28 @@
 var qtimeit = require('qtimeit');
 var qrusage = require('./');
 
-//var getrusage = require('getrusage');
-//var microtime = require('microtime');
+try { var getrusage = require('getrusage'); } catch (e) { }
+try { var microtime = require('microtime'); } catch (e) { }
 
 var floats = new Float64Array(16);
 var x;
 qtimeit.bench.timeGoal = .5;
 qtimeit.bench.visualize = true;
+qtimeit.bench.baselineAvg = 1000000;
 qtimeit.bench({
+/**
+    'getrusage': function() {
+        x = getrusage.usage();
+        // 100k/s
+    },
+    'q.getrusage': function() {
+        x = qrusage.getrusage();
+        // 200k/s returning a new obj (was 400k/s with node-v0.10.42)
+        // 655k/s populating Float64 array (Phenom II 3.6g)
+        // 1070k/s (Skylake 4.5g)
+    },
+/**/
+
     'q.zero return': function() {
         x = qrusage.binding.zero();
         // 23.1m/s (SKL 4.5g)
@@ -47,6 +61,7 @@ qtimeit.bench({
         // 200k/s returning a new obj (was 400k/s with node-v0.10.42)
         // 655k/s populating Float64 array (Phenom II 3.6g)
         // 1070k/s (Skylake 4.5g)
+        // 3.4m/s SKL 4.5g node-v8
     },
     'q.microtime': function() {
         x = qrusage.microtime();
@@ -60,13 +75,14 @@ qtimeit.bench({
         // 4.8m/s
         // x = microtime.nowDouble();
         // 4.5m/s
-        // 7.1m/s (SKL 4.5g)
+        // 7.1m/s (SKL 4.5g), 7.5m/s node-v8
         // x = microtime.nowStruct();
         // 1.1m/s
     },
     'getrusage': function() {
         x = getrusage.usage();
         // 100k/s
+        // 200k/s SKL 4.5g node-v8
     },
 **/
 });
