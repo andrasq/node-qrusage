@@ -1,6 +1,6 @@
 {
   "name": "qrusage",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "quick getrusage(2)",
   "license": "Apache-2.0",
   "main": "qrusage.js",
@@ -27,7 +27,7 @@
     "used"
   ],
   "dependencies": {
-    "nan": "2.4.0"
+    "nan": "2.11.1"
   },
   "devDependencies": {
     "qnit": "*"
