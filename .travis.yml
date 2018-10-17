@@ -1,0 +1,14 @@
+language: node_js
+node_js:
+  - 0.10
+  - 4
+  - 6
+  - 8
+  - 10
+preinstall:
+  - npm install npm@2.15.0
+after_success:
+  - if [ `node -p 'process.version.slice(0, 3)'` != "v8." ]; then exit; fi
+  - npm install -g nyc@8.4.0
+  - npm install -g codecov
+  - npm run coverage && codecov

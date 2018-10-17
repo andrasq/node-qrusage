@@ -1,5 +1,7 @@
 qrusage
 =======
+[![Build Status](https://api.travis-ci.org/andrasq/node-qrusage.svg?branch=master)](https://travis-ci.org/andrasq/node-qrusage?branch=master)
+[![Coverage Status](https://codecov.io/github/andrasq/node-qrusage/coverage.svg?branch=master)](https://codecov.io/github/andrasq/node-qrusage?branch=master)
 
 fast `getrusage()` binding to return process resource usage
 
@@ -139,6 +141,7 @@ Linux does not maintain many of these fields, and currently returns zeroes for:
 
 ## Change Log
 
+- 1.4.2  upgrade nan for node-v10, fix _float16 check, add to ci
 - 1.4.1  100% test coverage, readme edits
 - 1.4.0  3x speedup to `getrusage` and `cpuUsage` with node v4 and higher
 - 1.3.0  cpuUsage() call
