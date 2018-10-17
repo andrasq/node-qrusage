@@ -16,7 +16,7 @@ var binding = require('./build/Release/qrusage');
 
 // static Float64Array to receive return values
 var _float16;
-if (process.version > 'v4') {
+if (parseInt(process.version.slice(1)) >= 4) {
     _float16 = new Float64Array(16);
 }
 
