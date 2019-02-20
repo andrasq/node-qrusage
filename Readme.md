@@ -38,6 +38,7 @@ return usage for the current process.  If called as
 `getrusage(getrusage.RUSAGE_CHILDREN)` will return usage for all the
 waited-for child processes of this process.
 
+
 ### Extras
 
 #### getrusage.cputime( [who] )
@@ -72,6 +73,41 @@ was read.
 
 This call is the same as `process.cpuUsage()` that appeared in node-v6.1.0.
 
+
+### Analytics
+
+A few functions help with analytics gathering.
+
+#### getrusage.storeUsage( name [,usage] )
+
+Remember the given usage (or the current usage) and associate it with `name`.  This
+usage may be referred to by name later in calls to `deltaUsage` and `sumUsage`.
+
+#### getrusage.removeUsage( name )
+
+Remove and return from the store the usage associated with `name`.  This call deletes the
+named usage from the store, and is intended to help with cleanup.
+
+#### getrusage.deltaUsage( oldUsage [,newUsage] )
+
+return an rusage object with the increases in usage from `oldUsage` to `newUsage.  If
+no `newUsage` is given compares to the current usage.  The usage may be specified by
+name if already defined with `storeUsage`.
+
+`deltaUsage` diffs all fields, so the usage may be annotated with other metrics.
+Fields that are present in only one usage object are retained unmodified.  Subtracted
+fields must be numeric.
+
+#### getrusage.sumUsage( usage1, usage2, ... )
+
+return an rusage object with the usage totals from the given rusage objects.  Useful
+to quickly get parent + child usage, or to total up deltas.  The usage may be
+specified by name if defined with `storeUsage`.
+
+`sumUsage` retains existing properties and property order, and can be used to copy
+objects (sum a single usage) or to sum up annotated metrics fields.  Properties that
+are present only only one object are retained unmodified.  Summed fields must be
+numeric.
 
 ## Notes
 
@@ -141,6 +177,7 @@ Linux does not maintain many of these fields, and currently returns zeroes for:
 
 ## Change Log
 
+- 1.5.0  new calls `storeUsage`, `removeUsage`, `deltaUsage`, `sumUsage`
 - 1.4.2  upgrade nan for node-v10, fix _float16 check, add to ci
 - 1.4.1  100% test coverage, readme edits
 - 1.4.0  3x speedup to `getrusage` and `cpuUsage` with node v4 and higher

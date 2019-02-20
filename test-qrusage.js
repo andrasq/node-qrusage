@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2014,2016 Andras Radics
+ * Copyright (C) 2014-2019 Andras Radics
  * Licensed under the Apache License, Version 2.0
  */
 
@@ -139,5 +139,106 @@ module.exports = {
             t.ok(usage.maxrss > 0);
             t.done();
         },
-    }
+    },
+
+    'analytics': {
+
+        'storeUsage should store current usage': function(t) {
+            getrusage.storeUsage('test');
+            var rusage = getrusage.removeUsage('test');
+            t.ok(rusage.utime >= 0);
+            t.ok(rusage.maxrss >= 0);
+            t.done();
+        },
+
+        'storeUsage should store a given usage': function(t) {
+            var usage = {};
+            getrusage.storeUsage('test', usage);
+            t.equal(getrusage.removeUsage('test'), usage);
+            t.done();
+        },
+
+        'removeUsage should delete from the store': function(t) {
+            getrusage.storeUsage('test');
+            getrusage.removeUsage('test');
+            t.strictEqual(getrusage.removeUsage('test'), undefined);
+            t.done();
+        },
+
+        'sumUsage should return total usage': function(t) {
+            var usage1 = { utime: 1, nvcsw: 7 }, usage2 = { utime: 2, nvcsw: 8 }, usage3 = { utime: 3, nvcsw: 9 };
+            t.deepEqual(getrusage.sumUsage(usage1), { utime: 1, nvcsw: 7 });
+            t.deepEqual(getrusage.sumUsage(usage1, usage2), { utime: 3, nvcsw: 15 });
+            t.deepEqual(getrusage.sumUsage(usage1, usage2, usage3), { utime: 6, nvcsw: 24 });
+            t.done();
+        },
+
+        'sumUsage should sum stored usage by name': function(t) {
+            var usage1 = { utime: 1, nvcsw: 7 }, usage2 = { utime: 2, nvcsw: 8 }, usage3 = { utime: 3, nvcsw: 9 };
+            getrusage.storeUsage('usage1', usage1);
+            getrusage.storeUsage('usage2', usage2);
+            getrusage.storeUsage('usage3', usage3);
+            
+            t.deepEqual(getrusage.sumUsage('usage1'), { utime: 1, nvcsw: 7 });
+            t.deepEqual(getrusage.sumUsage('usage1', 'usage2'), { utime: 3, nvcsw: 15 });
+            t.deepEqual(getrusage.sumUsage('usage1', 'usage2', 'usage3'), { utime: 6, nvcsw: 24 });
+            t.done();
+        },
+
+        'sumUsage should copy and sum fields and retains field order': function(t) {
+            var obj1 = { a: 1, b: 2 }, obj2 = { c: 3 }, obj3 = { c: 4 };
+
+            t.deepEqual(getrusage.sumUsage(obj1), { a: 1, b: 2 });
+            t.deepEqual(getrusage.sumUsage(obj1, obj2), { a: 1, b: 2, c: 3 });
+            t.deepEqual(getrusage.sumUsage(obj1, obj2, obj3), { a: 1, b: 2, c: 7 });
+
+            t.deepEqual(getrusage.sumUsage({ x: 0 }, obj1), { x: 0, a: 1, b: 2 });
+            t.deepEqual(Object.keys(getrusage.sumUsage({ x: 0 }, obj1)), [ 'x', 'a', 'b' ]);
+
+            t.done();
+        },
+
+        'sumUsage should throw if named usage not found': function(t) {
+            t.throws(function() { getrusage.sumUsage('notfound') }, /not stored/);
+            t.done();
+        },
+
+        'deltaUsage should return usage difference': function(t) {
+            var usage1 = { utime: 1, nvcsw: 7, extra: 7 }, usage2 = { utime: 2, nvcsw: 8, extra: 9 };
+            t.deepEqual(getrusage.deltaUsage(usage1, usage2), { utime: 1, nvcsw: 1, extra: 2 })
+            t.done();
+        },
+
+        'deltaUsage should throw if named usage not found': function(t) {
+            t.throws(function() { getrusage.deltaUsage('notfound') }, /notfound/);
+            t.throws(function() { getrusage.deltaUsage('notfound') }, /usage not stored/);
+            t.done();
+        },
+
+        'deltaUsage should use default currentUsage': function(t) {
+            var usage1 = getrusage();
+            var x = 0;
+            // burn some cpu
+            for (var i = 0; i < 20000000; i++) x += i; t.ok(x > 0);
+            var usage2 = getrusage.deltaUsage(usage1);
+            t.ok(usage2.utime > 0);
+            t.done();
+        },
+
+        'deltaUsage should diff stored usage by name': function(t) {
+            var usage1 = { utime: 1, nvcsw: 7, extra: 7 }, usage2 = { utime: 2, nvcsw: 8, extra: 9 };
+            getrusage.storeUsage('usage1', usage1);
+            getrusage.storeUsage('usage2', usage2);
+            
+            t.deepEqual(getrusage.deltaUsage('usage1', 'usage2'), { utime: 1, nvcsw: 1, extra: 2 })
+            t.done();
+        },
+
+        'deltaUsage should diff all properties': function(t) {
+            var obj1 = { a: 1, b: 2 }, obj2 = { b: 3, c: 4 };
+            t.contains(getrusage.deltaUsage(obj1), { a: 1, b: 2 });
+            t.deepEqual(getrusage.deltaUsage(obj1, obj2), { a: 1, b: 1, c: 4 });
+            t.done();
+        },
+    },
 };

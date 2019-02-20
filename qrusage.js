@@ -5,7 +5,7 @@
  * fields not maintained by Linux are returned as zeros.  These are
  * ixrss, idrss, isrss, nswap, msgsnd, msgrcv, nsignals
  *
- * Copyright (C) 2014,2016 Andras Radics
+ * Copyright (C) 2014-2019 Andras Radics
  * Licensed under the Apache License, Version 2.0
  */
 
@@ -53,6 +53,42 @@ module.exports.cpuUsage = function cpuUsage( lastUsage ) {
     };
 }
 
+var usageStore = {};
+module.exports.storeUsage = function storeUsage( name, rusage ) {
+    rusage = rusage || module.exports.getrusage();
+    return (usageStore[name] = rusage);
+}
+module.exports.removeUsage = function removeUsage( name ) {
+    var usage = usageStore[name];
+    delete usageStore[name];
+    return usage;
+}
+function _lookupUsage( name ) {
+    var usage = usageStore[name] || (typeof name === 'object' && name) || null;
+    if (usage) return usage; else throw new Error(name + ': usage not stored');
+}
+
+module.exports.sumUsage = function sumUsage( /* ,VARARGS */ ) {
+    var sum = {};
+    for (var i = 0; i < arguments.length; i++) {
+        var usage = _lookupUsage(arguments[i]);
+        for (var k in usage) {
+            sum[k] !== undefined ? sum[k] += usage[k] : sum[k] = usage[k];
+        }
+    }
+    return sum;
+}
+
+module.exports.deltaUsage = function deltaUsage( lastUsage, currentUsage ) {
+    currentUsage = currentUsage ? _lookupUsage(currentUsage) : module.exports.getrusage();
+
+    // copy the old usage, then revise with the changes
+    var delta = module.exports.sumUsage(_lookupUsage(lastUsage));
+    for (var k in currentUsage) {
+        delta[k] = (delta[k] !== undefined) ? currentUsage[k] - delta[k] : currentUsage[k];
+    }
+    return delta;
+}
 
 function getrusage_array(which) {
     var fields = binding.getrusage_array(which, _float16);
