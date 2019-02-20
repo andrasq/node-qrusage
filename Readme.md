@@ -90,7 +90,7 @@ named usage from the store, and is intended to help with cleanup.
 
 #### getrusage.deltaUsage( oldUsage [,newUsage] )
 
-return an rusage object with the increases in usage from `oldUsage` to `newUsage.  If
+return an rusage object with the increases in usage from `oldUsage` to `newUsage`.  If
 no `newUsage` is given compares to the current usage.  The usage may be specified by
 name if already defined with `storeUsage`.
 
