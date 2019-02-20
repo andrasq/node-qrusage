@@ -1,7 +1,8 @@
 qrusage
 =======
 [![Build Status](https://api.travis-ci.org/andrasq/node-qrusage.svg?branch=master)](https://travis-ci.org/andrasq/node-qrusage?branch=master)
-[![Coverage Status](https://codecov.io/github/andrasq/node-qrusage/coverage.svg?branch=master)](https://codecov.io/github/andrasq/node-qrusage?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/andrasq/node-qrusage/badge.svg?branch=master)](https://coveralls.io/github/andrasq/node-qrusage?branch=master)
+
 
 fast `getrusage()` binding to return process resource usage
 
