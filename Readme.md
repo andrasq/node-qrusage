@@ -45,7 +45,7 @@ waited-for child processes of this process.
 #### getrusage.cputime( [who] )
 
 returns the number of seconds of user + system cpu time used.  Accepts
-the `getrusage.RUSAGE`_SELF or `getrusage.RUSAGE_CHILDREN` argument.
+the `getrusage.RUSAGE_SELF` or `getrusage.RUSAGE_CHILDREN` argument.
 
 For historical reasons, this call is also available as `getrusage_cpu`.
 
