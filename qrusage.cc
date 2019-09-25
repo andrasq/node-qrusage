@@ -30,6 +30,16 @@ double * getFloat64ArrayPointer( unsigned int length, v8::Local<v8::Value> arg )
     return NULL;
 }
 
+// extract the integer passed as the first argument
+static int getIntArg( Nan::NAN_METHOD_ARGS_TYPE info, int index ) {
+#if NODE_MAJOR_VERSION >= 10
+    int defaultValue = RUSAGE_SELF;
+    return Nan::To<int32_t>(info[index]).FromMaybe(defaultValue);
+#else
+    return info[index]->Int32Value();
+#endif
+}
+
 NAN_METHOD(zero) {
     double* fields = getFloat64ArrayPointer(1, info[0]);
     if (fields) {
@@ -43,7 +53,7 @@ NAN_METHOD(zero) {
 
 NAN_METHOD(cputime) {
     struct rusage ru;
-    int who = (info[0]->IsNumber()) ? info[0]->Int32Value() : RUSAGE_SELF;
+    int who = (info[0]->IsNumber()) ? getIntArg(info, 0) : RUSAGE_SELF;
 
     getrusage(who, &ru);
     double cpuUsed =
@@ -55,7 +65,7 @@ NAN_METHOD(cputime) {
 
 NAN_METHOD( cpuusage ) {
     struct rusage ru;
-    int who = (info[0]->IsNumber()) ? info[0]->Int32Value() : RUSAGE_SELF;
+    int who = (info[0]->IsNumber()) ? getIntArg(info, 0) : RUSAGE_SELF;
     // faster to poke the return values into an existing array
     double* fields = getFloat64ArrayPointer(2, info[0]);
 
@@ -111,7 +121,7 @@ NAN_METHOD( microtime ) {
 
 NAN_METHOD( getrusage_array ) {
     struct rusage ru;
-    int who = (info[0]->IsNumber()) ? info[0]->Int32Value() : RUSAGE_SELF;
+    int who = (info[0]->IsNumber()) ? getIntArg(info, 0) : RUSAGE_SELF;
     double* fields = getFloat64ArrayPointer(16, info[1]);
 
     getrusage(who, &ru);

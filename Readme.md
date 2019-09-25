@@ -178,6 +178,7 @@ Linux does not maintain many of these fields, and currently returns zeroes for:
 
 ## Change Log
 
+- 1.5.1  change to build under node-v12
 - 1.5.0  new calls `storeUsage`, `removeUsage`, `deltaUsage`, `sumUsage`
 - 1.4.2  upgrade nan for node-v10, fix _float16 check, add to ci
 - 1.4.1  100% test coverage, readme edits
@@ -185,4 +186,3 @@ Linux does not maintain many of these fields, and currently returns zeroes for:
 - 1.3.0  cpuUsage() call
 - 1.2.0  use `nan` 2.x for v8 bindings (5% slower though)
 - 1.1.0  cputime() alias of getrusage_cpu(), microtime()
-
