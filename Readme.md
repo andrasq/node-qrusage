@@ -178,6 +178,7 @@ Linux does not maintain many of these fields, and currently returns zeroes for:
 
 ## Change Log
 
+- 1.5.2  work around travis non-build, test with coveralls
 - 1.5.1  change to build under node-v12
 - 1.5.0  new calls `storeUsage`, `removeUsage`, `deltaUsage`, `sumUsage`
 - 1.4.2  upgrade nan for node-v10, fix _float16 check, add to ci

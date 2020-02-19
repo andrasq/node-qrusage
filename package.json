@@ -1,6 +1,6 @@
 {
   "name": "qrusage",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "description": "quick getrusage(2)",
   "license": "Apache-2.0",
   "main": "qrusage.js",
@@ -14,6 +14,7 @@
     "url": "git://github.com/andrasq/node-qrusage"
   },
   "keywords": [ "Andras", "quick", "fast", "getrusage", "cpu", "memory", "resources", "used" ],
+
   "dependencies": {
     "nan": "2.14.0"
   },
@@ -22,9 +23,9 @@
   },
 
   "scripts": {
-    "clean": "rm -rf .nyc_output/ coverage/ npm-debug.log",
+    "clean": "rm -rf .nyc_output/ coverage/ npm-debug.log build",
+    "coverage": "nyc --reporter text --reporter lcov npm test",
     "distclean": "rm -rf build ; ",
-    "test": "qnit test-*",
-    "coverage": "nyc --reporter text --reporter lcov npm test"
+    "test": "qnit test-*"
   }
 }
