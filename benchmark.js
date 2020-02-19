@@ -22,6 +22,7 @@ qtimeit.bench({
         // 200k/s returning a new obj (was 400k/s with node-v0.10.42)
         // 655k/s populating Float64 array (Phenom II 3.6g)
         // 1070k/s (Skylake 4.5g)
+        // 1060k/s (Ryzen R2600X 4.0g)
     },
 /**/
 
@@ -83,8 +84,9 @@ qtimeit.bench({
         x = getrusage.usage();
         // 100k/s
         // 200k/s SKL 4.5g node-v8
+        // 113k/s R2600X
     },
-**/
+/**/
 });
 
 console.log(x, floats[0], floats[1]);
