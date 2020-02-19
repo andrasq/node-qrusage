@@ -6,10 +6,15 @@ node_js:
   - 8
   - 10
   - 12
+  - 13
 preinstall:
-  - npm install npm@2.15.0
+  - npm install -g npm@2.15.0 qnit
+  # build explicitly, travis.ci does not build on install (as of 2020-02-18)
+  # ignore the "prefer global npm" notice, it needs a local copy to build.
+  - npm install nan@2.14.0
+  - npm build .
 after_success:
   - if [ `node -p 'process.version.slice(0, 3)'` != "v8." ]; then exit; fi
-  - npm install -g nyc@8.4.0 codecov coveralls
-  - nyc -r text -r lcov npm test && codecov
+  - npm install -g nyc@8.4.0 coveralls
+  - nyc -r text -r lcov npm test
   - nyc report -r text-lcov | coveralls
