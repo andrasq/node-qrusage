@@ -5,7 +5,7 @@
  * fields not maintained by Linux are returned as zeros.  These are
  * ixrss, idrss, isrss, nswap, msgsnd, msgrcv, nsignals
  *
- * Copyright (C) 2014-2019 Andras Radics
+ * Copyright (C) 2014-2020 Andras Radics
  * Licensed under the Apache License, Version 2.0
  */
 
@@ -15,6 +15,9 @@
 var binding = require('./build/Release/qrusage');
 
 // static Float64Array to receive return values
+// Note that node-v0.10 supports Float64Arrays but the plugin does not receive it.
+// Testing the return value works, the bindings return nothing if they populated the array.
+// Node-v4.x no longer suffers from this.
 var _float16;
 if (parseInt(process.version.slice(1)) >= 4) {
     _float16 = new Float64Array(16);

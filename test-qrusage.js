@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2014-2019 Andras Radics
+ * Copyright (C) 2014-2020 Andras Radics
  * Licensed under the Apache License, Version 2.0
  */
 
@@ -236,7 +236,10 @@ module.exports = {
 
         'deltaUsage should diff all properties': function(t) {
             var obj1 = { a: 1, b: 2 }, obj2 = { b: 3, c: 4 };
-            t.contains(getrusage.deltaUsage(obj1), { a: 1, b: 2 });
+            var u = getrusage.deltaUsage(obj1);
+            t.equal(u.a, 1);
+            t.equal(u.b, 2);
+            // t.contains(getrusage.deltaUsage(obj1), { a: 1, b: 2 });
             t.deepEqual(getrusage.deltaUsage(obj1, obj2), { a: 1, b: 1, c: 4 });
             t.done();
         },
