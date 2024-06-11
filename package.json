@@ -16,7 +16,7 @@
   "keywords": [ "Andras", "quick", "fast", "getrusage", "cpu", "memory", "resources", "used" ],
 
   "dependencies": {
-    "nan": "2.14.0"
+    "nan": "^2.14.0"
   },
   "devDependencies": {
     "qnit": "^0.25"
