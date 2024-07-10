@@ -8,11 +8,10 @@ jobs:
     strategy:
       matrix:
         # 0.10 and 0.8 might need a newer qmock
-        # NOTE: github actions have deprecated nodejs 0-6 (possibly more), need to roll own
-        node: [ 12, 16, 13.8.0 ]
+        node: [ 6, 8, 12, 16, 13.8.0 ]
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
 
