@@ -22,7 +22,13 @@ double * getFloat64ArrayPointer( unsigned int length, v8::Local<v8::Value> arg )
         v8::Local<v8::Float64Array> array = arg.As<v8::Float64Array>();
         if (array->Length() >= length) {
             v8::Local<v8::ArrayBuffer> ab = array->Buffer();
+// Actually it's 7.9 here but this would lead to ABI issues with Node.js 13
+// using 7.8 till 13.2.0.
+#if (V8_MAJOR_VERSION >= 8)
+            double* fields = static_cast<double*>(ab->GetBackingStore()->Data());
+#else
             double* fields = static_cast<double*>(ab->GetContents().Data());
+#endif
             return fields;
         }
     }
