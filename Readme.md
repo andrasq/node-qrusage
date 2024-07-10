@@ -11,6 +11,8 @@ metrics tracked by the operating system for the current process, or for its
 completed child processes.  Low overhead, runs over 3 million calls /
 second (node v8.9.4).
 
+If the install errors out with `fatal error: bits/c++config.h: No such file or directory`,
+try to `sudo apt-get install gcc-multilib g++-multilib`.
 
 ## Summary
 

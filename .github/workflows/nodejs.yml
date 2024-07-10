@@ -16,6 +16,9 @@ jobs:
           node-version: ${{ matrix.node }}
       - run: npm install
 
+      # work around the "bits/c++config.h: No such file or directory" github build error
+      - run: sudo apt-get install gcc-multilib g++-multilib || true
+
       - name: npm test
         run: test `node -v` '!=' 'v5.8.0' && npm test || true
 
