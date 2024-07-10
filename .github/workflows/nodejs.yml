@@ -8,7 +8,8 @@ jobs:
     strategy:
       matrix:
         # 0.10 and 0.8 might need a newer qmock
-        node: [ 0.11.x, 6, 8, 12, 16, 5.8.0 ]
+        # NOTE: github actions have deprecated nodejs 0-6 (possibly more), need to roll own
+        node: [ 8, 12, 16, 13.8.0 ]
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -21,18 +22,18 @@ jobs:
       - run: npm install
 
       - name: npm test
-        run: test `node -v` '!=' 'v5.8.0' && npm test || true
+        run: test `node -v` '!=' 'v13.8.0' && npm test || true
 
       - name: install nyc
-        if: ${{ matrix.node == '5.8.0' }}
+        if: ${{ matrix.node == '13.8.0' }}
         run: npm install -g nyc@8.4.0
 
       - name: test coverage
-        if: ${{ matrix.node == '5.8.0' }}
+        if: ${{ matrix.node == '13.8.0' }}
         run: npm run coverage
 
       - name: upload coverage
-        if: ${{ matrix.node == '5.8.0' }}
+        if: ${{ matrix.node == '13.8.0' }}
         uses: coverallsapp/github-action@v1.1.2
         with:
           github-token: ${{ github.token }}
