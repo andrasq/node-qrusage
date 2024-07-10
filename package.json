@@ -1,6 +1,6 @@
 {
   "name": "qrusage",
-  "version": "1.5.2",
+  "version": "1.6.0",
   "description": "quick getrusage(2)",
   "license": "Apache-2.0",
   "main": "qrusage.js",
