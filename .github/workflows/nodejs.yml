@@ -8,7 +8,7 @@ jobs:
     strategy:
       matrix:
         # 0.10 and 0.8 might need a newer qmock
-        node: [ 6, 8, 12, 16, 13.8.0 ]
+        node: [ 16, 13.8.0 ]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
